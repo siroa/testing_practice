@@ -1,0 +1,199 @@
+openapi: 3.0.0
+info:
+  title: Test API
+  description: テスティングの勉強に使用するWebAPI.
+  termsOfService: http://example.com/terms/
+  contact:
+    name: API support
+    url: http://www.example.com/support
+    email: support@example.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+
+servers:
+- url: https://stg.sample-server.com/v1
+  description: Staging server
+
+paths:
+# paths オブジェクト
+  /users:
+    # path item オブジェクト
+    get: # GET
+      # Operationオブジェクト
+      tags:
+        - users
+      summary: 全てのユーザーを取得する.
+      parameters: []
+      responses: # レスポンス定義
+        '200': # HTTP status
+          description: JSON形式で全てのユーザー情報が返る.
+          content:
+            application/json: # レスポンスの形式指定
+              schema: 
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User' # 参照するモデル
+                    example: # サンプルデータ
+                      - user_id: 101
+                        name: John Doe
+                        grade: gold
+                      - user_id: 202
+                        name: Jane Do
+                        grade: silver
+
+  /orders:
+    post:
+      tags:
+        - orders
+      summary: 注文票を作成する
+      description: |
+        〇ゴールド会員\
+        　・購入金額10000円以上で10%割引\
+        　・購入金額5000円以上10000未満で7%割引\
+        　・購入金額5000円未満で3%割引\
+        　・配送サービス対象商品を含み、購入金額5000円以上購入で、配送料無料\
+        〇シルバー会員\
+        　・購入金額10000円以上で5%割引\
+        　・購入金額5000円以上10000未満で3%割引\
+        　・購入金額5000円未満で割引なし\
+        　・配送サービス対象商品を含み、購入金額10000円以上購入で、配送料無料\
+        〇非会員\
+        　・購入金額10000円以上で3%割引\
+        　・購入金額10000未満で割引なし
+      parameters: []
+      requestBody: # リクエストボディ
+        description: order to create
+        content:
+          application/json:
+            schema: # POSTするオブジェクト
+              type: array
+              items:
+                $ref: '#/components/schemas/Order'
+      responses:
+        '200':
+          description: Product selection is complete.
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Receipt'
+                example:
+                  order_id: 101
+                  shipping_fee: 540
+                  sum_price: 10540
+
+  /orders/shipping_fee:
+    post:
+      tags:
+        - orders
+      summary: 配送料金を返す
+      description: |
+        配送料金=「商品サイズ」+「配送オプション」＋「配送地域料金」の合計金額.\
+        〇商品サイズ\
+        　・小型：300円\
+        　・中型：600円\
+        　・大型：800円\
+        〇配送オプション\
+        　・通常配達：0円\
+        　・指定日配達：100円\
+        　・お急ぎ配達：300円\
+        〇配送地域料金は以下のリンクを参照\
+        　・http://example.com/hogehoge
+      parameters: []
+      requestBody: # リクエストボディ
+        description: shipping fee to return
+        content:
+          application/json:
+            schema: # POSTするオブジェクト
+              type: array
+              items:
+                $ref: '#/components/schemas/Shipping_fee'
+      responses:
+        '200':
+          description: Product selection is complete.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  shipping_fee:
+                    type: string
+                    example: 800
+
+
+components:
+  schemas: # スキーマオブジェクトの定義
+    User: # モデル名
+      type: object # 型
+      required: # 必須フィールド
+        - id
+      properties:
+        user_id: # プロパティ名
+          type: integer # 型 
+          format: int64 # フォーマット(int32, int64等)
+        name:
+          type: string
+          minLength: 8
+          maxLength: 32
+        grade:
+          type: string
+          enum:
+            - gold
+            - silver
+            - nonmember
+    Order:
+      type: object
+      required:
+        - id
+      properties:
+        user_id:
+          type: integer
+          format: int64
+          example: 101
+        price:
+          type: integer
+          example: 10000
+    Receipt:
+      type: object
+      properties:
+        order_id:
+          type: integer
+          format: int64
+          example: 101
+        shipping_fee:
+          type: integer
+          example: 510
+        sum_price:
+          type: integer
+          example: 10510
+    Shipping_fee:
+      type: object
+      properties:
+        size:
+          type: string
+          enum:
+            - small
+            - medium
+            - large
+        option:
+          type: string
+          enum:
+            - regular
+            - designation
+            - haste
+        region:
+          type: string
+          example: "hokkaido"
+
+          
+tags:
+- name: users
+  description: Access to Users
+- name: orders
+  description: Access to Orders
