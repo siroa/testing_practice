@@ -1,0 +1,23 @@
+GET http://localhost:18080/v1/users
+
+###
+
+POST http://localhost:18080/v1/orders
+content-type: application/json
+
+{
+    "user_id": 201,
+    "price": 9000,
+    "target": true
+}
+
+###
+
+POST http://localhost:18080/v1/orders/shipping_fee
+content-type: application/json
+
+{
+    "size": "medium",
+    "option": "haste",
+    "region": "hokkaido"
+}

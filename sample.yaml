@@ -13,7 +13,7 @@ info:
   version: 1.0.0
 
 servers:
-- url: https://stg.sample-server.com/v1
+- url: http://localhost:18080/v1
   description: Staging server
 
 paths:
@@ -125,6 +125,18 @@ paths:
                   shipping_fee:
                     type: string
                     example: 800
+        '400':
+          description: リクエストボディのパラメーターが不正
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Error'
+                example:
+                  source: size
+                  type: MISSING_REQUEST_PROPERTY
+                  message: size is mandatory
 
 
 components:
@@ -159,6 +171,9 @@ components:
         price:
           type: integer
           example: 10000
+        target:
+          type: boolean
+          example: true
     Receipt:
       type: object
       properties:
@@ -190,6 +205,18 @@ components:
         region:
           type: string
           example: "hokkaido"
+    Error:
+      type: object
+      properties:
+        source:
+          type: string
+          example: id
+        type:
+          type: string
+          example: MISSING_REQUEST_PROPERTY
+        message:
+          type: string
+          example: user not found.
 
           
 tags:
