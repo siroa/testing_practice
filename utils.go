@@ -1,15 +1,16 @@
 package main
 
 func CalcOrder(receipt *Receipt, purchase *Purchase) int {
+	receipt.ShippingFee = 300 //配送料は一律300円とする
 	if purchase.UserID == 101 {
 		receipt.SumPrice = DiscountedPrice(int(purchase.Price), 0.1, 0.07, 0.03)
-		if int(purchase.Price) >= 5000 && purchase.Target {
+		if int(purchase.Price) >= 5000 && purchase.Contained {
 			receipt.ShippingFee = 0
 		}
 		receipt.SumPrice += receipt.ShippingFee
 	} else if purchase.UserID == 201 {
 		receipt.SumPrice = DiscountedPrice(int(purchase.Price), 0.05, 0.03, 0.0)
-		if int(purchase.Price) >= 10000 && purchase.Target {
+		if int(purchase.Price) >= 10000 && purchase.Contained {
 			receipt.ShippingFee = 0
 		}
 		receipt.SumPrice += receipt.ShippingFee

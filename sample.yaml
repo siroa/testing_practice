@@ -171,7 +171,7 @@ components:
         price:
           type: integer
           example: 10000
-        target:
+        contained:
           type: boolean
           example: true
     Receipt:

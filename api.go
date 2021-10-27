@@ -35,9 +35,9 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 type Purchase struct {
-	UserID int64 `json:"user_id" validate:"required"`
-	Price  uint  `json:"price" validate:"required"`
-	Target bool  `json:"target" validate:"required"`
+	UserID    int64 `json:"user_id" validate:"required"`
+	Price     uint  `json:"price" validate:"required"`
+	Contained bool  `json:"contained" validate:"required"`
 }
 
 type Receipt struct {
@@ -63,7 +63,6 @@ func PostOrders(w http.ResponseWriter, r *http.Request) {
 
 	receipt := Receipt{}
 	receipt.OrderID = int64(rand.Intn(99) + 100)
-	receipt.ShippingFee = 310
 	if purchase.Price == 0 {
 		w.WriteHeader(400)
 		return
