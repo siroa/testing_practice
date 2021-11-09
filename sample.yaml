@@ -52,6 +52,7 @@ paths:
         - orders
       summary: 注文票を作成する
       description: |
+        ※配送料は一律300円固定で/oerders/shipping_feeと連動しない\
         〇ゴールド会員\
         　・購入金額10000円以上で10%割引\
         　・購入金額5000円以上10000未満で7%割引\
@@ -87,6 +88,28 @@ paths:
                   order_id: 101
                   shipping_fee: 540
                   sum_price: 10540
+        '400':
+          description: リクエストボディのパラメーターが不正
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Error'
+                example:
+                  type: MISSING_REQUEST_PROPERTY
+                  message: Please set the correct value.
+        '404':
+          description: 存在しないユーザーID
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Error'
+                example:
+                  type: MISSING_REQUEST_USERID
+                  message: Non-existent user ID.
 
   /orders/shipping_fee:
     post:
@@ -133,10 +156,8 @@ paths:
                 type: object
                 items:
                   $ref: '#/components/schemas/Error'
-                example:
-                  source: size
                   type: MISSING_REQUEST_PROPERTY
-                  message: size is mandatory
+                  message: Please set the correct value.
 
 
 components:
@@ -144,7 +165,9 @@ components:
     User: # モデル名
       type: object # 型
       required: # 必須フィールド
-        - id
+        - user_id
+        - name
+        - grade
       properties:
         user_id: # プロパティ名
           type: integer # 型 
@@ -162,7 +185,9 @@ components:
     Order:
       type: object
       required:
-        - id
+        - user_id
+        - price
+        - contained
       properties:
         user_id:
           type: integer
@@ -176,6 +201,10 @@ components:
           example: true
     Receipt:
       type: object
+      required:
+        - order_id
+        - shipping_fee
+        - sum_price
       properties:
         order_id:
           type: integer
@@ -189,6 +218,10 @@ components:
           example: 10510
     Shipping_fee:
       type: object
+      required:
+        - size
+        - option
+        - region
       properties:
         size:
           type: string
@@ -208,9 +241,6 @@ components:
     Error:
       type: object
       properties:
-        source:
-          type: string
-          example: id
         type:
           type: string
           example: MISSING_REQUEST_PROPERTY

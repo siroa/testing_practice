@@ -8,6 +8,18 @@ import (
 	"time"
 )
 
+var (
+	PropErr     = "MISSING_REQUEST_PROPERTY"
+	PropMess    = "Please set the correct value."
+	NotFond     = "MISSING_REQUEST_USERID"
+	NotFondMess = "Non-existent user ID."
+)
+
+type ErrorMessage struct {
+	Type    string `json:"type"`
+	Message string `json:"message"`
+}
+
 type User struct {
 	UserID int64  `json:"user_id"`
 	Name   string `json:"name"`
@@ -53,22 +65,37 @@ func PostOrders(w http.ResponseWriter, r *http.Request) {
 	purchase := Purchase{}
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
+		eMessage := ErrorMessage{Type: PropErr, Message: PropMess}
 		w.WriteHeader(400)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(eMessage)
 		return
 	}
 	if err := json.Unmarshal(body, &purchase); err != nil {
+		eMessage := ErrorMessage{Type: PropErr, Message: PropMess}
 		w.WriteHeader(400)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(eMessage)
 		return
 	}
 
 	receipt := Receipt{}
 	receipt.OrderID = int64(rand.Intn(99) + 100)
 	if purchase.Price == 0 {
+		eMessage := ErrorMessage{Type: PropErr, Message: PropMess}
 		w.WriteHeader(400)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(eMessage)
 		return
 	}
 	status := CalcOrder(&receipt, &purchase)
-	w.WriteHeader(status)
+	if status == 404 {
+		eMessage := ErrorMessage{Type: NotFond, Message: NotFondMess}
+		w.WriteHeader(status)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(eMessage)
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(receipt)
@@ -90,11 +117,17 @@ func PostShippingFee(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
+		eMessage := ErrorMessage{Type: PropErr, Message: PropMess}
 		w.WriteHeader(400)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(eMessage)
 		return
 	}
 	if err := json.Unmarshal(body, &shippingFeeElem); err != nil {
+		eMessage := ErrorMessage{Type: PropErr, Message: PropMess}
 		w.WriteHeader(400)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(eMessage)
 		return
 	}
 
