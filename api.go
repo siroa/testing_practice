@@ -114,6 +114,7 @@ type ShippingFee struct {
 	ShippingFee uint `json:"shipping_fee"`
 }
 
+// エラーメッセージ入れ替え
 func PostShippingFee(w http.ResponseWriter, r *http.Request) {
 	shippingFeeElem := ShippingFeeElem{}
 	shippingFee := ShippingFee{}
@@ -144,7 +145,7 @@ func PostShippingFee(w http.ResponseWriter, r *http.Request) {
 	}
 	status = ReturnOptionCost(&shippingFeeElem, &shippingFee)
 	if status != 200 {
-		eMessage := ErrorMessage{Type: PropErr, Message: OptionMsg}
+		eMessage := ErrorMessage{Type: PropErr, Message: RegionMsg}
 		w.WriteHeader(status)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(eMessage)
@@ -152,7 +153,7 @@ func PostShippingFee(w http.ResponseWriter, r *http.Request) {
 	}
 	status = ReturnRegionCost(&shippingFeeElem, &shippingFee)
 	if status != 200 {
-		eMessage := ErrorMessage{Type: PropErr, Message: RegionMsg}
+		eMessage := ErrorMessage{Type: PropErr, Message: OptionMsg}
 		w.WriteHeader(status)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(eMessage)
