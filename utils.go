@@ -23,11 +23,13 @@ func CalcOrder(receipt *Receipt, purchase *Purchase) int {
 	return 200
 }
 
+// 5000円以上を5000円より上で割引率を変えて壊す
+// price >= 5000 -> price > 5000
 func DiscountedPrice(price int, a, b, c float64) int {
 	sumPrice := 0
 	if price >= 10000 {
 		sumPrice = price - int(float64(price)*a)
-	} else if price >= 5000 {
+	} else if price > 5000 {
 		sumPrice = price - int(float64(price)*b)
 	} else {
 		sumPrice = price - int(float64(price)*c)
@@ -61,15 +63,16 @@ func ReturnOptionCost(shippingFeeElem *ShippingFeeElem, shippingFee *ShippingFee
 	return 200
 }
 
+// 北陸 800yen -> 500yenにして壊す
 func ReturnRegionCost(shippingFeeElem *ShippingFeeElem, shippingFee *ShippingFee) int {
 	region := shippingFeeElem.Region
 	if region == "tokyo" {
 		shippingFee.ShippingFee += 0
 	} else if region == "kanto" || region == "toukai" || region == "kansai" {
 		shippingFee.ShippingFee += 500
-	} else if region == "hokkaido" || region == "sikoku" || region == "kyusyu" {
+	} else if region == "hokkaido" || region == "sikoku" || region == "kyusyu" || region == "hokuriku" {
 		shippingFee.ShippingFee += 1000
-	} else if region == "touhoku" || region == "koushinetu" || region == "hokuriku" || region == "tyugoku" {
+	} else if region == "touhoku" || region == "koushinetu" || region == "tyugoku" {
 		shippingFee.ShippingFee += 800
 	} else if region == "okinawa" {
 		shippingFee.ShippingFee += 1200
