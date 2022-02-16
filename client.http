@@ -19,5 +19,5 @@ content-type: application/json
 {
     "size": "medium",
     "option": "haste",
-    "region": "hokkaido"
+    "region": "hokkaidoa"
 }

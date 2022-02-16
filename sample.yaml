@@ -149,15 +149,18 @@ paths:
                     type: string
                     example: 800
         '400':
-          description: リクエストボディのパラメーターが不正
+          description: |
+            リクエストボディのパラメーターが不正.\
+            不正のパラメーターごとにメッセージは変更
           content:
             application/json:
               schema:
                 type: object
                 items:
                   $ref: '#/components/schemas/Error'
+                example:
                   type: MISSING_REQUEST_PROPERTY
-                  message: Please set the correct value.
+                  message: Please choose from large, medium and small.
 
 
 components:

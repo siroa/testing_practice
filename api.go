@@ -9,10 +9,13 @@ import (
 )
 
 var (
-	PropErr     = "MISSING_REQUEST_PROPERTY"
-	PropMess    = "Please set the correct value."
-	NotFond     = "MISSING_REQUEST_USERID"
-	NotFondMess = "Non-existent user ID."
+	PropErr    = "MISSING_REQUEST_PROPERTY"
+	PropMsg    = "Please set the correct value."
+	SizeMsg    = "Please choose from large, medium and small."
+	OptionMsg  = "Please choose from regular, designation and haste."
+	RegionMsg  = "Please choose from the prefectures."
+	NotFond    = "MISSING_REQUEST_USERID"
+	NotFondMsg = "Non-existent user ID."
 )
 
 type ErrorMessage struct {
@@ -65,14 +68,14 @@ func PostOrders(w http.ResponseWriter, r *http.Request) {
 	purchase := Purchase{}
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		eMessage := ErrorMessage{Type: PropErr, Message: PropMess}
+		eMessage := ErrorMessage{Type: PropErr, Message: PropMsg}
 		w.WriteHeader(400)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(eMessage)
 		return
 	}
 	if err := json.Unmarshal(body, &purchase); err != nil {
-		eMessage := ErrorMessage{Type: PropErr, Message: PropMess}
+		eMessage := ErrorMessage{Type: PropErr, Message: PropMsg}
 		w.WriteHeader(400)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(eMessage)
@@ -82,7 +85,7 @@ func PostOrders(w http.ResponseWriter, r *http.Request) {
 	receipt := Receipt{}
 	receipt.OrderID = int64(rand.Intn(99) + 100)
 	if purchase.Price == 0 {
-		eMessage := ErrorMessage{Type: PropErr, Message: PropMess}
+		eMessage := ErrorMessage{Type: PropErr, Message: PropMsg}
 		w.WriteHeader(400)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(eMessage)
@@ -90,7 +93,7 @@ func PostOrders(w http.ResponseWriter, r *http.Request) {
 	}
 	status := CalcOrder(&receipt, &purchase)
 	if status == 404 {
-		eMessage := ErrorMessage{Type: NotFond, Message: NotFondMess}
+		eMessage := ErrorMessage{Type: NotFond, Message: NotFondMsg}
 		w.WriteHeader(status)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(eMessage)
@@ -117,14 +120,14 @@ func PostShippingFee(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		eMessage := ErrorMessage{Type: PropErr, Message: PropMess}
+		eMessage := ErrorMessage{Type: PropErr, Message: PropMsg}
 		w.WriteHeader(400)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(eMessage)
 		return
 	}
 	if err := json.Unmarshal(body, &shippingFeeElem); err != nil {
-		eMessage := ErrorMessage{Type: PropErr, Message: PropMess}
+		eMessage := ErrorMessage{Type: PropErr, Message: PropMsg}
 		w.WriteHeader(400)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(eMessage)
@@ -133,17 +136,26 @@ func PostShippingFee(w http.ResponseWriter, r *http.Request) {
 
 	status := ReturnSizeCost(&shippingFeeElem, &shippingFee)
 	if status != 200 {
+		eMessage := ErrorMessage{Type: PropErr, Message: SizeMsg}
 		w.WriteHeader(status)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(eMessage)
 		return
 	}
 	status = ReturnOptionCost(&shippingFeeElem, &shippingFee)
 	if status != 200 {
+		eMessage := ErrorMessage{Type: PropErr, Message: OptionMsg}
 		w.WriteHeader(status)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(eMessage)
 		return
 	}
 	status = ReturnRegionCost(&shippingFeeElem, &shippingFee)
 	if status != 200 {
+		eMessage := ErrorMessage{Type: PropErr, Message: RegionMsg}
 		w.WriteHeader(status)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(eMessage)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
