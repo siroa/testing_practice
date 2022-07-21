@@ -7,8 +7,8 @@ content-type: application/json
 
 {
     "user_id": 201,
-    "price": 6000,
-    "target": true
+    "price": 10000001,
+    "contained": true
 }
 
 ###

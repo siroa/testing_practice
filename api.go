@@ -2,10 +2,13 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"time"
+
+	"github.com/go-playground/validator/v10"
 )
 
 var (
@@ -51,7 +54,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 type Purchase struct {
 	UserID    int64 `json:"user_id" validate:"required"`
-	Price     uint  `json:"price" validate:"required"`
+	Price     uint  `json:"price" validate:"required,max=1000000,min=0"`
 	Contained bool  `json:"contained" validate:"required"`
 }
 
@@ -75,6 +78,19 @@ func PostOrders(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err := json.Unmarshal(body, &purchase); err != nil {
+		eMessage := ErrorMessage{Type: PropErr, Message: PropMsg}
+		w.WriteHeader(400)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(eMessage)
+		return
+	}
+
+	validate := validator.New()
+	if err := validate.Struct(purchase); err != nil {
+		errs := err.(validator.ValidationErrors)
+		for _, errrs := range errs {
+			fmt.Printf("Field=%s, Tag=%s\n", errrs.Field(), errrs.Tag())
+		}
 		eMessage := ErrorMessage{Type: PropErr, Message: PropMsg}
 		w.WriteHeader(400)
 		w.Header().Set("Content-Type", "application/json")
