@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>サンプル</title>
+</head>
+<body>
+    <div>
+        <label for="name">年齢:</label>
+        <br />
+        <input type="number" id="age" name="age" min="0" max="150" required>
+        <span class="validity"></span>
+    </div>
+    <br />
+    <div>
+        <label for="name">性別:</label>
+        <br />
+        <select name="sex" id="sex" required>
+            <option value="female">F</option>
+            <option value="male">M</option>
+            <option value="x">X</option>
+        </select>
+    </div>
+    <br />
+    <div>
+        <label for="name">症状:</label>
+        <br />
+        <select name="symptom" id="symptom" required>
+            <option value="fever">高熱</option>
+            <option value="cough">咳</option>
+            <option value="headache">頭痛</option>
+        </select>
+    </div>
+    <br />
+    <div>
+        <input type="button" value="決定" id="btn">
+    </div>
+<script>
+function butotnClick(){
+    var name = document.getElementById('age').value;
+    console.log(name);
+}
+
+let button = document.getElementById('btn');
+button.addEventListener('click', butotnClick);
+</script>
+<style>
+input:invalid+span:after {
+  content: '✖';
+  padding-left: 5px;
+}
+
+input:valid+span:after {
+  content: '✓';
+  padding-left: 5px;
+}
+div {
+    text-align: left;
+}
+</style>
+</body>
+</html>
+
