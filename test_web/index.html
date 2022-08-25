@@ -48,18 +48,23 @@ const AGE_NG = "年齢が不正です。";
 
 var returnAgeMsg = age => {
     var returnMsg = 0;
-    if( age <= 8){
+    var personal = ''
+    if( age < 18 ){
         returnMsg = 0;
+        personal = '児童の';
     }else if( age === 18){
         returnMsg = 1;
-    }else if( age <= 50){
+        personal = '成人の';
+    }else if( age <= 64){
         returnMsg = 0;
+        personal = '成人の';
     }else if (age <= 150){
         returnMsg = 0;
+        personal = '高齢者の'
     }
     // console.log("age")
     // console.log(returnMsg)
-    return returnMsg;
+    return [returnMsg, personal];
 };
 var returnSexMsg = sex => {
     var returnMsg = 0;
@@ -102,13 +107,14 @@ function butotnClick(){
     var sex = document.getElementById('sex').value;
     var symptom = document.getElementById('symptom').value;
 
-    var sum = returnAgeMsg(ageNum) + returnSexMsg(sex) + returnSymptomMsg(symptom)
+    var sum = returnAgeMsg(ageNum)[0] + returnSexMsg(sex) + returnSymptomMsg(symptom)
+    var p = returnAgeMsg(ageNum)[1]
 
     if (sum === 3) {
         document.getElementById('output').textContent = NG;
         return    
     }
-    document.getElementById('output').textContent = OK;
+    document.getElementById('output').textContent = p + OK;
 }
 
 let button = document.getElementById('btn');
