@@ -30,6 +30,8 @@
             <option value="fever">高熱</option>
             <option value="cough">咳</option>
             <option value="headache">頭痛</option>
+            <option value="dizzy">めまい</option>
+            <option value="palpitation">動悸</option>
         </select>
     </div>
     <br />
@@ -40,13 +42,59 @@
         <p id="output"></p>
     </div>
 <script>
-const OK = "患者に適切な薬が投与されました。"
-const NG = "患者に薬が投薬されませでした。"
-const AGE_NG = "年齢が不正です。"
+const OK = "患者に適切な薬が投与されました。";
+const NG = "バグ！患者に薬が投薬されませでした。";
+const AGE_NG = "年齢が不正です。";
+
+var returnAgeMsg = age => {
+    var returnMsg = 0;
+    if( age <= 8){
+        returnMsg = 0;
+    }else if( age === 18){
+        returnMsg = 1;
+    }else if( age <= 50){
+        returnMsg = 0;
+    }else if (age <= 150){
+        returnMsg = 0;
+    }
+    // console.log("age")
+    // console.log(returnMsg)
+    return returnMsg;
+};
+var returnSexMsg = sex => {
+    var returnMsg = 0;
+    if ( sex === 'female') {
+        returnMsg = 0;
+    }else if( sex === 'male'){
+        returnMsg = 0;
+    }else if( sex === 'x'){
+        returnMsg = 1;
+    }
+    // console.log("sex")
+    // console.log(returnMsg)
+    return returnMsg;
+}
+var returnSymptomMsg = symptom => {
+    var returnMsg = 0;
+    if ( symptom === 'fever') {
+        returnMsg = 0;
+    }else if( symptom === 'cough'){
+        returnMsg = 0;
+    }else if( symptom === 'headache'){
+        returnMsg = 0;
+    }else if( symptom === 'dizzy'){
+        returnMsg = 1;
+    }else if( symptom === 'palpitation'){
+        returnMsg = 0;
+    }
+    // console.log("symptom")
+    // console.log(returnMsg)
+    return returnMsg;
+}
 
 function butotnClick(){
     var age = document.getElementById('age').value;
-    var ageNum = Number(age)
+    var ageNum = Number(age);
     if( age === "" || isNaN(ageNum) || ageNum > 150 || ageNum < 0) {
         document.getElementById('output').textContent = AGE_NG;
         return
@@ -54,13 +102,19 @@ function butotnClick(){
     var sex = document.getElementById('sex').value;
     var symptom = document.getElementById('symptom').value;
 
+    var sum = returnAgeMsg(ageNum) + returnSexMsg(sex) + returnSymptomMsg(symptom)
 
+    if (sum === 3) {
+        document.getElementById('output').textContent = NG;
+        return    
+    }
     document.getElementById('output').textContent = OK;
 }
 
 let button = document.getElementById('btn');
 button.addEventListener('click', butotnClick);
 </script>
+
 <style>
 input:invalid+span:after {
   content: '✖';
