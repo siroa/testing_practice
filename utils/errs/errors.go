@@ -1,6 +1,12 @@
 package errs
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+	"strings"
+
+	"github.com/go-playground/validator"
+)
 
 const (
 	PropErr     = "MISSING_REQUEST_PROPERTY"
@@ -44,4 +50,16 @@ func NewUnexpectedError(t, msg string) *AppError {
 		Type:    t,
 		Message: msg,
 	}
+}
+
+func ReturnJsonValidation(s interface{}) *AppError {
+	validate := validator.New()
+	err := validate.Struct(s)
+	if err != nil {
+		str := err.Error()
+		i := strings.Index(str, "Error")
+		fmt.Println(str[i:])
+		return NewBadRequestError(PropErr, str[i:])
+	}
+	return nil
 }

@@ -23,6 +23,7 @@ func (sh ShippingHandler) PostShippingFee(c *gin.Context) {
 	fee, e := sh.service.PostShippingFee(body)
 	if e != nil {
 		c.SecureJSON(e.Code, e.AsMessage())
+		return
 	}
 	c.SecureJSON(http.StatusOK, fee)
 }

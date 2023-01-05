@@ -10,6 +10,8 @@ import (
 
 func Run() {
 	r := gin.Default()
+	proxies := [...]string{"localhost", "127.0.0.1"}
+	r.SetTrustedProxies(proxies[:])
 	uStub := d.NewUserRepositoryStub()
 	us := s.NewUserService(uStub)
 	uh := UserHandler{us}
