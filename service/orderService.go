@@ -24,6 +24,10 @@ func (s DefaultOrderService) PostOrders(body []byte) (*d.Receipt, *errs.AppError
 	if err := json.Unmarshal(body, p); err != nil {
 		return nil, errs.NewBadRequestError(errs.PropErr, errs.PropMess)
 	}
+	err := errs.ReturnJsonValidation(p)
+	if err != nil {
+		return nil, err
+	}
 	if p.Price == 0 {
 		return nil, errs.NewBadRequestError(errs.PropErr, errs.PropMess)
 	}

@@ -19,9 +19,15 @@ func NewShippingService(repo d.ShippingRepository) DefaultShippingService {
 }
 
 func (s DefaultShippingService) PostShippingFee(body []byte) (*d.ShippingFee, *errs.AppError) {
-	elem, _ := s.repo.GetShipping()
+	elem, fee := s.repo.GetShipping()
+	elem.ResetShippingFeeElem()
+	fee.ResetShippingFee()
 	if err := json.Unmarshal(body, elem); err != nil {
 		return nil, errs.NewBadRequestError(errs.PropErr, errs.PropMess)
+	}
+	err := errs.ReturnJsonValidation(elem)
+	if err != nil {
+		return nil, err
 	}
 	status := s.repo.ReturnSizeCost()
 	if status != 200 {
@@ -35,6 +41,6 @@ func (s DefaultShippingService) PostShippingFee(body []byte) (*d.ShippingFee, *e
 	if status != 200 {
 		return nil, errs.NewBadRequestError(errs.PropErr, errs.PropMess)
 	}
-	_, fee := s.repo.GetShipping()
+	_, fee = s.repo.GetShipping()
 	return fee, nil
 }

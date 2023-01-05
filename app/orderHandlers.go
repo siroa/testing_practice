@@ -23,10 +23,7 @@ func (oh OrderHandler) PostOrders(c *gin.Context) {
 	receipt, e := oh.service.PostOrders(body)
 	if e != nil {
 		c.SecureJSON(e.Code, e.AsMessage())
+		return
 	}
 	c.SecureJSON(http.StatusOK, receipt)
-}
-
-func (oh OrderHandler) PostShippingFee(c *gin.Context) {
-
 }
