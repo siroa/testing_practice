@@ -1,4 +1,4 @@
-FROM golang:1.13.5-alpine as builder
+FROM golang:1.18.9-alpine3.17 as builder
 
 WORKDIR /go/src
 
@@ -18,6 +18,5 @@ RUN go build \
 FROM scratch as runner
 
 COPY --from=builder /go/bin/main /app/main
-COPY ./* /app/images/
 
 ENTRYPOINT ["/app/main"]
