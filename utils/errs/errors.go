@@ -9,10 +9,12 @@ import (
 )
 
 const (
-	PropErr     = "MISSING_REQUEST_PROPERTY"
-	PropMess    = "Please set the correct value."
-	NotFond     = "MISSING_REQUEST_USERID"
-	NotFondMess = "Non-existent user ID."
+	PropErr           = "MISSING_REQUEST_PROPERTY"
+	PropMess          = "Please set the correct value."
+	NotFond           = "MISSING_REQUEST_USERID"
+	NotFondMess       = "Non-existent user ID."
+	Unauthorized      = "MISSING_REQUEST_UNAUTHORIZED"
+	UnauthorizedMesss = "Unauthorized error."
 )
 
 type AppError struct {
@@ -25,6 +27,14 @@ func (e AppError) AsMessage() *AppError {
 	return &AppError{
 		Type:    e.Type,
 		Message: e.Message,
+	}
+}
+
+func NewUnauthorizedError(t, msg string) *AppError {
+	return &AppError{
+		Code:    http.StatusUnauthorized,
+		Type:    t,
+		Message: msg,
 	}
 }
 

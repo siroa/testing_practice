@@ -1,8 +1,9 @@
 package domain
 
 type UserRepositoryStub struct {
-	user  User
-	users Users
+	user    User
+	users   Users
+	account Account
 }
 
 func (u UserRepositoryStub) Users() (*Users, error) {
