@@ -39,13 +39,14 @@ var (
 func SetClaims(name string) string {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
-	claims["sub"] = "test"
+	claims["sub"] = "fortest"
 	claims["name"] = name
 	claims["iat"] = time.Now().Unix()
 	claims["exp"] = time.Now().Add(time.Minute * 1).Unix() // expire 1 minute
 	claims["iss"] = issuer
 	claims["aud"] = audience[0]
 
+	// change signingkey
 	// signKey := os.Getenv("SIGNINGKEY")
 	signKey := "secret"
 
