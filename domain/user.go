@@ -6,6 +6,11 @@ type User struct {
 	Grade  string `json:"grade"`
 }
 
+type Account struct {
+	Name     string `json:"name"`
+	Password string `json:"password"`
+}
+
 type UsersArray []*User
 
 type Users struct {

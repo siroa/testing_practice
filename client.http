@@ -1,8 +1,25 @@
-GET http://localhost:18080/v1/users
+@token = Bearer 
+###
+
+POST http://localhost:18080/v1/login
+content-type: application/json
+
+{
+    "name": "admin",
+    "password": "tests01"
+}
 
 ###
 
+GET http://localhost:18080/v1/users
+
+###
+GET http://localhost:18080/v1/secure
+Authorization: {{token}}
+
+###
 POST http://localhost:18080/v1/orders
+Authorization: {{token}}
 content-type: application/json
 
 {
@@ -14,6 +31,7 @@ content-type: application/json
 ###
 
 POST http://localhost:18080/v1/orders/shipping_fee
+Authorization: {{token}}
 content-type: application/json
 
 {

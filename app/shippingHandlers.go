@@ -14,6 +14,9 @@ type ShippingHandler struct {
 }
 
 func (sh ShippingHandler) PostShippingFee(c *gin.Context) {
+	if jwtErr := ValidJwt(c); jwtErr != nil {
+		c.SecureJSON(jwtErr.Code, jwtErr.AsMessage())
+	}
 	body, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
 		e := errs.NewBadRequestError(errs.PropErr, errs.PropMess)
