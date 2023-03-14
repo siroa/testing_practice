@@ -156,6 +156,7 @@ paths:
                 type: object
                 items:
                   $ref: '#/components/schemas/Error'
+                example:
                   type: MISSING_REQUEST_PROPERTY
                   message: Please set the correct value.
 
