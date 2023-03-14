@@ -1,5 +1,7 @@
 package domain
 
+import "time"
+
 type ShippingRepositoryStub struct {
 	ShippingFeeElem ShippingFeeElem
 	ShippingFee     ShippingFee
@@ -43,6 +45,8 @@ func (s *ShippingRepositoryStub) ReturnOptionCost() int {
 }
 
 func (s *ShippingRepositoryStub) ReturnRegionCost() int {
+	// broken time over 47sec
+	time.Sleep(time.Second * 47)
 	region := s.ShippingFeeElem.Region
 	if region == "tokyo" {
 		s.ShippingFee.ShippingFee += 0

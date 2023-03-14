@@ -52,7 +52,7 @@ func DiscountedPrice(price int, a, b, c float64) int64 {
 	var sumPrice int
 	if price >= 10000 {
 		sumPrice = price - int(float64(price)*a)
-	} else if price >= 5000 {
+	} else if price >= 3000 { // broken 5000 -> 3000
 		sumPrice = price - int(float64(price)*b)
 	} else {
 		sumPrice = price - int(float64(price)*c)
